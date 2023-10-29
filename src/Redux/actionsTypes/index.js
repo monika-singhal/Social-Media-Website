@@ -1,0 +1,4 @@
+
+export const USER_INFO = "USER_INFO";
+export const SET_USERS_DATA = "SET_USERS_DATA";
+export const SET_FOLLOWING_USERS = "SET_FOLLOWING_USERS";
