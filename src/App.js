@@ -24,7 +24,6 @@ function App() {
   const reduxData = useSelector((state) => state);
   const dispatch = useDispatch();
 
-  // console.log("stores state", reduxData)
   useEffect(()=>{
     //snapshot here keeps an regular eye on collection , whenever we add an data in posts collection , we can get it through snapshot
      db.collection('Posts')
@@ -46,7 +45,6 @@ function App() {
     if(reduxData?.userInfo){
       setUser(reduxData?.userInfo);
     }else if(dataFromFirebase){
-      console.log("setting data from firebase")
       setUser(dataFromFirebase);
     }else{
       setUser(null);
@@ -88,11 +86,12 @@ function App() {
     if(reduxData && (!reduxData?.userInfo || !reduxData.followingUsers?.length || (reduxData?.followingUsers?.length === 1 && reduxData?.followingUsers?.[0] === dataFromFirebase?.uid))){
       return posts;
     }else if(reduxData && reduxData?.followingUsers && reduxData?.followingUsers?.length && posts  && posts?.length>0){
-      const filteredPosts = posts?.filter(postData => reduxData?.followingUsers?.includes(postData?.post?.userId));
+      const filteredPosts = posts?.filter(postData => (reduxData?.followingUsers?.includes(postData?.post?.userId) || postData?.post?.userId === dataFromFirebase?.uid));
       return filteredPosts
     }else{
       return [];
     }
+    
   }
   return (
    

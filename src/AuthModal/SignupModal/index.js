@@ -41,7 +41,6 @@ const SignupModal = ({ openSignupModal, setOpenSignupModal, user, setUser }) => 
      const unsubscribe =  auth.onAuthStateChanged((authUser)=>{
         if(authUser){
           //user has loggedIn...
-          console.log("authUser", authUser);
           //here if you notice that it is persistent even after refresh like you login and refresh  because it uses cookie tracking.
           // onAuthStateChanged do a cookie tracking means keeps you logged in even after refresh.
           setUser(authUser);

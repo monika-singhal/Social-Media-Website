@@ -37,27 +37,16 @@ function Post({userName , postMessage , userImage , postId, setOpenLoginModal, p
      return ()=>unSubscribe()
   },[postId])
   useEffect(()=>{
-    let unSubscribe;
-    if(postId){
-     unSubscribe = db
-     .collection('Posts')
-     .doc(postId)
-     .collection('Likes')
-     .onSnapshot((snapshot)=>{
-       setPostLikes(snapshot.docs.map((doc)=>(
-        console.log("doc",doc?.data()),
-        {
-          id : doc?.id,
-          Likes :  doc?.data()
-        })))
-    })
-
-
-   }
-
-    return ()=>unSubscribe()
+   
+  if(postId){
+    const docRef = db.collection('Posts').doc(postId);
+    docRef.get().then(function(doc) {
+     if (doc.exists) {
+       var currentValue = doc?.data()?.Likes;
+       setPostLikes(currentValue??1)
+     }})
+  }
  },[postId])
-
 
   const handleAddComment = (e)=>{
     if(!loginUser){
@@ -86,14 +75,26 @@ function Post({userName , postMessage , userImage , postId, setOpenLoginModal, p
       return;
     }
     // e.preventDefault();
-    db
-    .collection('Posts')
-    .doc(postId)
-    .collection('Likes')
-    .add({
-      timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
-      Likes : (postLikes?.[0]?.Likes?.Likes? postLikes?.[0]?.Likes?.Likes + 1 : 1)
-    })
+    const docRef = db.collection('Posts').doc(postId);
+         docRef.get().then(function(doc) {
+          if (doc.exists) {
+            var currentValue = doc?.data()?.Likes;
+            docRef?.update({
+              Likes : currentValue ? currentValue +1 : 1
+            })
+            .then(()=>{
+             console.log("liked successfully")
+            })
+            .catch((err)=>{
+              console.log("error in liked button")
+            })
+          } else {
+            console.log("Document does not exist.");
+          }
+        }).catch(function(error) {
+          console.error("Error getting document:", error);
+        });
+    
     setIsLiked(true);
   }
   return (
@@ -129,12 +130,10 @@ function Post({userName , postMessage , userImage , postId, setOpenLoginModal, p
           ))}
         </div>
         <div className='comments-container'>
-        {/* <IconButton 
-        onClick={handleLikePost}
-        > */}
+       
           {/* <Favorite color="primary" /> */}
-          <div onClick={handleLikePost}><HeartIcon filled={isLiked} /> {(postLikes?.[0]?.Likes?.Likes)}</div> 
-        {/* </IconButton> */}
+          <div onClick={handleLikePost}><HeartIcon filled={isLiked} /> {(isLiked ? postLikes +1 : postLikes)}</div> 
+
       <Grid container spacing={2}>
           <Grid item xs={8}>
             <TextField

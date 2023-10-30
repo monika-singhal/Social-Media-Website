@@ -27,7 +27,7 @@ const MessagePost = ({user}) => {
       setMessage('');
     })
     .catch((error) => {
-      console.error(alert('error in posting message'));
+      console.error('error in posting message');
     });
     // setMessage('')
 

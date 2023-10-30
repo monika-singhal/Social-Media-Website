@@ -11,8 +11,6 @@ const EditMessageModal = ({ message, clickEditMessage,setClickEditMessage, onClo
      e.preventDefault();
      const docRef = db.collection('Posts').doc(postId);
      docRef?.get()?.then(function(doc) {
-        //  console.log("docRef====",doc)
-        // console.l
         if (doc.exists) {
             
             docRef?.update({
